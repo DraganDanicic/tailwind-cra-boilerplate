@@ -1,27 +1,36 @@
 import logo from './logo.svg';
 import './App.css';
-import {ButtonAtom, H1Atom} from './components';
+
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { ButtonAtom, H1Atom } from './components';
 
 function App() {
+  const [imgs, setImgs] = useState([]);
+  const [breed, setBreed] = useState(null);
+
+  const [list, setList] = useState([]);
+  useEffect(() => {
+    axios.get(`https://dog.ceo/api/breed/${breed}/images`).then(res => setImgs(res.data.message));
+  }, [breed])
+
+  useEffect(() => {
+    axios.get('https://dog.ceo/api/breeds/list/all').then(res => setList(Object.keys(res.data.message)));
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <ButtonAtom/>
-        <H1Atom/>
-      </header>
+    <div className>
+      <h1><strong>DOGS</strong></h1>
+      <div style={{display: "flex"}}>
+      <ul>
+        {list.map(race => <li onClick={() => setBreed(race)}>{race}</li>)}
+      </ul>
+
+      <ul>
+        {imgs.map(img => <li><img src={img}></img></li>)}
+      </ul>
     </div>
+    </div >
   );
 }
 
